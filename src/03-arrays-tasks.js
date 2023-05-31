@@ -493,8 +493,9 @@ function getIdentityMatrix(n) {
  *     0, 100 => [ 0, 1, 2, ..., 100 ]
  *     3, 3   => [ 3 ]
  */
-function getIntervalArray(/* start, end */) {
-  throw new Error('Not implemented');
+function getIntervalArray(start, end) {
+  const rez = new Array(end - start + 1).fill(start).map((el, i) => el + i);
+  return rez;
 }
 
 /**
@@ -508,8 +509,9 @@ function getIntervalArray(/* start, end */) {
  *   [ 'a', 'a', 'a', 'a' ]  => [ 'a' ]
  *   [ 1, 1, 2, 2, 3, 3, 4, 4] => [ 1, 2, 3, 4]
  */
-function distinct(/* arr */) {
-  throw new Error('Not implemented');
+function distinct(arr) {
+  const rez = new Set(arr);
+  return Array.from(rez);
 }
 
 /**
@@ -542,10 +544,20 @@ function distinct(/* arr */) {
  *    "Poland" => ["Lodz"]
  *   }
  */
-function group(/* array, keySelector, valueSelector */) {
-  throw new Error('Not implemented');
+function group(array, keySelector, valueSelector) {
+  return array.reduce((obj, el) => {
+    const country = keySelector(el);
+    const city = valueSelector(el);
+    if (obj.has(country)) {
+      const citys = obj.get(country);
+      citys.push(city);
+      obj.set(country, citys);
+    } else {
+      obj.set(country, [city]);
+    }
+    return obj;
+  }, new Map());
 }
-
 
 /**
  * Projects each element of the specified array to a sequence
@@ -560,8 +572,9 @@ function group(/* array, keySelector, valueSelector */) {
  *   [[1, 2], [3, 4], [5, 6]], (x) => x     =>   [ 1, 2, 3, 4, 5, 6 ]
  *   ['one','two','three'], (x) => x.split('')  =>   ['o','n','e','t','w','o','t','h','r','e','e']
  */
-function selectMany(/* arr, childrenSelector */) {
-  throw new Error('Not implemented');
+function selectMany(arr, childrenSelector) {
+  const rez = arr.map((el) => (el ? childrenSelector(el) : 0));
+  return rez.flat();
 }
 
 
@@ -577,10 +590,10 @@ function selectMany(/* arr, childrenSelector */) {
  *   ['one','two','three'], [2]       => 'three'  (arr[2])
  *   [[[ 1, 2, 3]]], [ 0, 0, 1 ]      => 2        (arr[0][0][1])
  */
-function getElementByIndexes(/* arr, indexes */) {
-  throw new Error('Not implemented');
+function getElementByIndexes(arr, indexes) {
+  const rez = indexes.reduce((array, value) => array[value], arr);
+  return rez;
 }
-
 
 /**
  * Swaps the head and tail of the specified array:
@@ -600,10 +613,16 @@ function getElementByIndexes(/* arr, indexes */) {
  *   [ 1, 2, 3, 4, 5, 6, 7, 8 ]   =>  [ 5, 6, 7, 8, 1, 2, 3, 4 ]
  *
  */
-function swapHeadAndTail(/* arr */) {
-  throw new Error('Not implemented');
+function swapHeadAndTail(arr) {
+  const rez = [];
+  const center = Math.floor(arr.length / 2);
+  if (arr.length % 2 === 0) {
+    rez.push(arr.slice(arr.length / 2, arr.length + 1), arr.slice(0, arr.length / 2));
+  } else {
+    rez.push(arr.slice(center + 1, arr.length + 1), arr[center], arr.slice(0, center));
+  }
+  return rez.flat();
 }
-
 
 module.exports = {
   findElement,

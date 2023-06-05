@@ -74,10 +74,38 @@ function isLeapYear(date) {
  *    Date(2000,1,1,10,0,0),  Date(2000,1,1,10,0,0,250)     => "00:00:00.250"
  *    Date(2000,1,1,10,0,0),  Date(2000,1,1,15,20,10,453)   => "05:20:10.453"
  */
-function timeSpanToString(/* startDate, endDate */) {
-  throw new Error('Not implemented');
+function timeSpanToString(startDate, endDate) {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  let rezult = '';
+  const hours = end.getHours() - start.getHours();
+  if (hours > 0) {
+    rezult += hours >= 10 ? `${hours}:` : `0${hours}:`;
+  } else {
+    rezult += '00:';
+  }
+  const minutes = end.getMinutes() - start.getMinutes();
+  if (minutes > 0) {
+    rezult += minutes >= 10 ? `${minutes}:` : `0${minutes}:`;
+  } else {
+    rezult += '00:';
+  }
+  const seconds = end.getSeconds() - start.getSeconds();
+  if (seconds > 0) {
+    rezult += seconds >= 10 ? `${seconds}.` : `0${seconds}.`;
+  } else {
+    rezult += '00.';
+  }
+  const milliSec = end.getMilliseconds() - start.getMilliseconds();
+  if (milliSec > 0) {
+    if (milliSec < 10) { rezult += `00${milliSec}`; }
+    if (milliSec >= 10 && milliSec < 100) { rezult += `0${milliSec}`; }
+    if (milliSec >= 100) { rezult += `${milliSec}`; }
+  } else {
+    rezult += '000';
+  }
+  return rezult;
 }
-
 
 /**
  * Returns the angle (in radians) between the hands of an analog clock
@@ -95,10 +123,13 @@ function timeSpanToString(/* startDate, endDate */) {
  *    Date.UTC(2016,3,5,18, 0) => Math.PI
  *    Date.UTC(2016,3,5,21, 0) => Math.PI/2
  */
-function angleBetweenClockHands(/* date */) {
-  throw new Error('Not implemented');
+function angleBetweenClockHands(date) {
+  const hours = date.getUTCHours() % 12;
+  const minutes = date.getUTCMinutes();
+  const rez = Math.abs(0.5 * (60 * hours - 11 * minutes)) % 360;
+  const degrees = Math.min(rez, 360 - rez);
+  return degrees * (Math.PI / 180);
 }
-
 
 module.exports = {
   parseDataFromRfc2822,
